@@ -1,0 +1,143 @@
+"use client";
+
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import FormField, { inputClasses } from "./FormField";
+import SelectField from "./SelectField";
+import SuccessScreen from "./SuccessScreen";
+import { OPCIONES_ORIGEN, registroSchema, type RegistroFormValues } from "@/lib/schema";
+import { submitRegistro } from "@/lib/submitRegistro";
+import type { Registro } from "@/types/registro";
+
+const emptyValues: RegistroFormValues = {
+  nombre: "",
+  edad: "",
+  telefono: "",
+  fecha_nacimiento: "",
+  como_se_entero: "",
+  como_se_entero_otro: "",
+};
+
+export default function RegistroForm() {
+  const [done, setDone] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<RegistroFormValues>({
+    resolver: zodResolver(registroSchema),
+    defaultValues: emptyValues,
+  });
+
+  const origen = watch("como_se_entero");
+
+  const onSubmit = async (v: RegistroFormValues) => {
+    setSubmitError(null);
+    const data: Registro = {
+      nombre: v.nombre.trim(),
+      edad: Number(v.edad),
+      telefono: v.telefono.replace(/\D/g, ""),
+      fecha_nacimiento: v.fecha_nacimiento,
+      como_se_entero: v.como_se_entero,
+      como_se_entero_otro: v.como_se_entero === "Otro" ? v.como_se_entero_otro?.trim() || null : null,
+    };
+    try {
+      await submitRegistro(data);
+      setDone(true);
+    } catch {
+      setSubmitError("No pudimos completar tu registro. Inténtalo de nuevo.");
+    }
+  };
+
+  if (done) {
+    return (
+      <SuccessScreen
+        onReset={() => {
+          reset(emptyValues);
+          setDone(false);
+        }}
+      />
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
+      <h2 className="text-xl font-extrabold text-neutral-900">Regístrate</h2>
+
+      <FormField
+        label="Nombre completo"
+        autoComplete="name"
+        placeholder="Tu nombre y apellido"
+        error={errors.nombre?.message}
+        {...register("nombre")}
+      />
+      <FormField
+        label="Edad"
+        type="number"
+        inputMode="numeric"
+        min={12}
+        max={30}
+        placeholder="Entre 12 y 30"
+        error={errors.edad?.message}
+        {...register("edad")}
+      />
+      <FormField
+        label="Teléfono"
+        type="tel"
+        inputMode="tel"
+        autoComplete="tel-national"
+        placeholder="10 dígitos"
+        hint="Ejemplo: 555 123 4567"
+        error={errors.telefono?.message}
+        {...register("telefono")}
+      />
+      <FormField
+        label="Fecha de cumpleaños"
+        type="date"
+        max={new Date().toISOString().slice(0, 10)}
+        autoComplete="bday"
+        error={errors.fecha_nacimiento?.message}
+        {...register("fecha_nacimiento")}
+      />
+      <SelectField
+        label="¿Cómo te enteraste de Alpha?"
+        options={OPCIONES_ORIGEN}
+        error={errors.como_se_entero?.message}
+        {...register("como_se_entero")}
+      />
+      {origen === "Otro" && (
+        <FormField
+          label="Cuéntanos cómo"
+          placeholder="Especifica cómo te enteraste"
+          error={errors.como_se_entero_otro?.message}
+          {...register("como_se_entero_otro")}
+        />
+      )}
+
+      {submitError && (
+        <p role="alert" className="rounded-xl bg-alpha-soft px-4 py-3 text-sm font-medium text-alpha-dark">
+          {submitError}
+        </p>
+      )}
+
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="flex w-full items-center justify-center gap-2 rounded-xl bg-alpha px-4 py-3.5 text-base font-bold text-white shadow-md transition hover:bg-alpha-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-alpha focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70"
+      >
+        {isSubmitting && (
+          <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" className="opacity-30" />
+            <path d="M22 12a10 10 0 00-10-10" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+          </svg>
+        )}
+        {isSubmitting ? "Enviando..." : "Registrarme"}
+      </button>
+    </form>
+  );
+}
