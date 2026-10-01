@@ -4,9 +4,11 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FormField, { inputClasses } from "./FormField";
+import CumpleanosField from "./CumpleanosField";
 import SelectField from "./SelectField";
 import SuccessScreen from "./SuccessScreen";
 import { OPCIONES_ORIGEN, registroSchema, type RegistroFormValues } from "@/lib/schema";
+import { calcularFechaNacimiento } from "@/lib/calcularFechaNacimiento";
 import { submitRegistro } from "@/lib/submitRegistro";
 import type { Registro } from "@/types/registro";
 
@@ -14,7 +16,8 @@ const emptyValues: RegistroFormValues = {
   nombre: "",
   edad: "",
   telefono: "",
-  fecha_nacimiento: "",
+  dia: "",
+  mes: "",
   como_se_entero: "",
   como_se_entero_otro: "",
 };
@@ -27,6 +30,7 @@ export default function RegistroForm() {
     register,
     handleSubmit,
     watch,
+    trigger,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<RegistroFormValues>({
@@ -42,7 +46,7 @@ export default function RegistroForm() {
       nombre: v.nombre.trim(),
       edad: Number(v.edad),
       telefono: v.telefono.replace(/\D/g, ""),
-      fecha_nacimiento: v.fecha_nacimiento,
+      fecha_nacimiento: calcularFechaNacimiento(Number(v.edad), Number(v.dia), Number(v.mes)),
       como_se_entero: v.como_se_entero,
       como_se_entero_otro: v.como_se_entero === "Otro" ? v.como_se_entero_otro?.trim() || null : null,
     };
@@ -81,9 +85,9 @@ export default function RegistroForm() {
         label="Edad"
         type="number"
         inputMode="numeric"
-        min={12}
-        max={30}
-        placeholder="Entre 12 y 30"
+        min={1}
+        step={1}
+        placeholder="Tu edad"
         error={errors.edad?.message}
         {...register("edad")}
       />
@@ -97,13 +101,11 @@ export default function RegistroForm() {
         error={errors.telefono?.message}
         {...register("telefono")}
       />
-      <FormField
-        label="Fecha de cumpleaños"
-        type="date"
-        max={new Date().toISOString().slice(0, 10)}
-        autoComplete="bday"
-        error={errors.fecha_nacimiento?.message}
-        {...register("fecha_nacimiento")}
+      <CumpleanosField
+        diaProps={register("dia")}
+        mesProps={register("mes", { onChange: () => watch("dia") && trigger("dia") })}
+        errorDia={errors.dia?.message}
+        errorMes={errors.mes?.message}
       />
       <SelectField
         label="¿Cómo te enteraste de Alpha?"
