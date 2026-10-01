@@ -26,6 +26,16 @@ export default function AdminQrPage() {
               proyectarHref="/admin/qr/registro"
             />
           </ul>
+          <ul>
+            <QrTarjeta
+              destacada
+              titulo="Portal de participantes"
+              url={`${origen}/participantes`}
+              textoPng="Portal de participantes"
+              archivo="alpha-qr-portal-participantes.png"
+              proyectarHref="/admin/qr/participantes"
+            />
+          </ul>
           <h2 className="text-lg font-extrabold text-neutral-900">Evaluación de cada sesión</h2>
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {SESIONES.map((s) => (

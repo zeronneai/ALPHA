@@ -5,7 +5,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 
 export const metadata: Metadata = {
-  title: "Alpha Jóvenes | Registro",
+  title: "Alpha Jóvenes",
   description: "Regístrate en Alpha Jóvenes, un grupo para jóvenes.",
 };
 

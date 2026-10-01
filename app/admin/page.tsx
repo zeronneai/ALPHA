@@ -47,17 +47,17 @@ export default function AdminInicioPage() {
         <StatCard etiqueta="Registrados" valor={String(registros.length)} />
         <StatCard
           etiqueta="Asistentes"
-          valor={datos.ultimaAsist ? String(datos.asistentes[datos.ultimaAsist - 1]) : "—"}
+          valor={datos.ultimaAsist ? String(datos.asistentes[datos.ultimaAsist - 1]) : "-"}
           detalle={datos.ultimaAsist ? `Sesión ${datos.ultimaAsist} (la más reciente)` : "Aún sin asistencias"}
         />
         <StatCard
           etiqueta="Promedio de asistencia"
-          valor={datos.promedio === null ? "—" : datos.promedio.toLocaleString("es-MX", { maximumFractionDigits: 1 })}
+          valor={datos.promedio === null ? "-" : datos.promedio.toLocaleString("es-MX", { maximumFractionDigits: 1 })}
           detalle="personas por sesión"
         />
         <StatCard
           etiqueta="Volverán"
-          valor={datos.pctVolvera === null ? "—" : `${datos.pctVolvera}%`}
+          valor={datos.pctVolvera === null ? "-" : `${datos.pctVolvera}%`}
           detalle={datos.ultimaEval ? `Sesión ${datos.ultimaEval}` : "Aún sin evaluaciones"}
         />
       </section>

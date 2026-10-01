@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { getSupabase } from "@/lib/supabase";
 
 const MENU = [
@@ -11,11 +11,17 @@ const MENU = [
   { href: "/admin/asistencia", etiqueta: "Asistencia" },
   { href: "/admin/registrados", etiqueta: "Registrados" },
   { href: "/admin/resultados", etiqueta: "Resultados" },
+  { href: "/admin/episodios", etiqueta: "Episodios" },
+  { href: "/admin/preguntas", etiqueta: "Preguntas" },
   { href: "/admin/qr", etiqueta: "QRs" },
 ];
 
 export default function AdminShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  // Con 7 opciones el menú se desplaza en el celular: la opción activa se centra sola.
+  useEffect(() => {
+    document.querySelector('nav[aria-label="Menú del panel"] [aria-current="page"]')?.scrollIntoView({ inline: "center", block: "nearest" });
+  }, [pathname]);
   const activo = (href: string) => (href === "/admin" ? pathname === "/admin" : pathname.startsWith(href));
 
   return (
@@ -37,13 +43,13 @@ export default function AdminShell({ children }: { children: ReactNode }) {
           </div>
         </div>
         <nav aria-label="Menú del panel" className="border-b border-neutral-200 bg-white">
-          <ul className="mx-auto grid max-w-5xl grid-cols-5">
+          <ul className="mx-auto flex max-w-5xl overflow-x-auto [scrollbar-width:none] lg:justify-center [&::-webkit-scrollbar]:hidden">
             {MENU.map((m) => (
-              <li key={m.href}>
+              <li key={m.href} className="shrink-0">
                 <Link
                   href={m.href}
                   aria-current={activo(m.href) ? "page" : undefined}
-                  className={`block border-b-4 whitespace-nowrap px-0.5 py-3 text-center text-xs font-bold leading-5 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-alpha sm:px-1 sm:text-base sm:leading-6 ${
+                  className={`block border-b-4 whitespace-nowrap px-3.5 py-3 text-center text-xs font-bold leading-5 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-alpha sm:px-4 sm:text-base sm:leading-6 ${
                     activo(m.href) ? "border-alpha text-alpha" : "border-transparent text-neutral-600 hover:text-alpha"
                   }`}
                 >

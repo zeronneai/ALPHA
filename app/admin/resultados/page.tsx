@@ -58,10 +58,10 @@ export default function ResultadosPage() {
                   <td className="px-3 py-2.5">{f.n}</td>
                   {f.supers.map((s, i) => (
                     <td key={i} className="px-3 py-2.5">
-                      {s === null ? "—" : `${s}%`}
+                      {s === null ? "-" : `${s}%`}
                     </td>
                   ))}
-                  <td className="px-3 py-2.5 font-bold text-alpha">{f.volvera === null ? "—" : `${f.volvera}%`}</td>
+                  <td className="px-3 py-2.5 font-bold text-alpha">{f.volvera === null ? "-" : `${f.volvera}%`}</td>
                 </tr>
               ))}
             </tbody>

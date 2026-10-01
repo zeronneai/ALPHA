@@ -1,6 +1,6 @@
 import { getSupabase } from "@/lib/supabase";
 import type { Registro } from "@/types/registro";
-import type { AsistenciaRow, EvaluacionRow, Id, RegistroRow } from "@/types/admin";
+import type { AsistenciaRow, EpisodioEstadoRow, EvaluacionRow, Id, PreguntaRow, RegistroRow } from "@/types/admin";
 
 const PAGINA = 1000;
 
@@ -71,4 +71,35 @@ export async function guardarInvitado(id: Id): Promise<void> {
   if (error) throw error;
   // Con RLS, un update sin permiso no da error: simplemente no modifica nada.
   if (!data || data.length === 0) throw new Error("No se actualizó el registro (¿falta permiso?)");
+}
+
+// Portal de participantes: el admin lee y escribe con su sesión (la RLS solo deja a admins).
+export async function leerEpisodiosEstado(): Promise<EpisodioEstadoRow[]> {
+  const { data, error } = await getSupabase().from("episodios_estado").select("episodio, desbloqueado, desbloqueado_at").order("episodio");
+  if (error) throw error;
+  return (data ?? []) as EpisodioEstadoRow[];
+}
+
+export const leerPreguntas = () => leerTodo<PreguntaRow>("preguntas_participantes");
+
+export async function guardarEstadoEpisodio(episodio: number, desbloqueado: boolean): Promise<EpisodioEstadoRow> {
+  const fila = { episodio, desbloqueado, desbloqueado_at: desbloqueado ? new Date().toISOString() : null };
+  const { data, error } = await getSupabase().from("episodios_estado").upsert(fila, { onConflict: "episodio" }).select("episodio");
+  if (error) throw error;
+  if (!data || data.length === 0) throw new Error("No se actualizó el episodio (¿falta permiso?)");
+  return fila;
+}
+
+export async function guardarRespondida(id: Id, respondida: boolean): Promise<string | null> {
+  const respondida_at = respondida ? new Date().toISOString() : null;
+  const { data, error } = await getSupabase().from("preguntas_participantes").update({ respondida, respondida_at }).eq("id", id).select("id");
+  if (error) throw error;
+  if (!data || data.length === 0) throw new Error("No se actualizó la pregunta (¿falta permiso?)");
+  return respondida_at;
+}
+
+export async function borrarPregunta(id: Id): Promise<void> {
+  const { data, error } = await getSupabase().from("preguntas_participantes").delete().eq("id", id).select("id");
+  if (error) throw error;
+  if (!data || data.length === 0) throw new Error("No se eliminó la pregunta (¿falta permiso?)");
 }

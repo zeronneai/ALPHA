@@ -1,3 +1,4 @@
+import Link from "next/link";
 import WhatsAppIcon from "./WhatsAppIcon";
 import { WHATSAPP_GROUP_CONFIGURADO, WHATSAPP_GROUP_LINK } from "@/lib/config";
 
@@ -27,6 +28,11 @@ export default function SuccessScreen({ onReset }: Props) {
           </a>
         </div>
       )}
+      <p className="mt-4 text-sm">
+        <Link href="/participantes" className="font-semibold text-alpha underline hover:text-alpha-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-alpha focus-visible:ring-offset-2">
+          Entra al portal de participantes
+        </Link>
+      </p>
       <button
         type="button"
         onClick={onReset}
