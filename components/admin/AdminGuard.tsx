@@ -12,7 +12,10 @@ type Sesion = "cargando" | "sin_sesion" | "con_sesion";
 /** Verifica la sesión de Supabase Auth; la seguridad real de los datos la da RLS. */
 export default function AdminGuard({ children }: { children: ReactNode }) {
   const router = useRouter();
-  const esLogin = usePathname() === "/admin/login";
+  const pathname = usePathname();
+  const esLogin = pathname === "/admin/login";
+  // Pantallas de proyección de QR (/admin/qr/…): a pantalla completa, sin menú del panel.
+  const esProyeccion = pathname.startsWith("/admin/qr/");
   const [sesion, setSesion] = useState<Sesion>("cargando");
 
   useEffect(() => {
@@ -34,6 +37,8 @@ export default function AdminGuard({ children }: { children: ReactNode }) {
 
   if (esLogin) return <>{sesion === "con_sesion" ? <Cargando /> : children}</>;
   if (sesion !== "con_sesion") return <Cargando />;
+
+  if (esProyeccion) return <>{children}</>;
 
   return (
     <AdminShell>

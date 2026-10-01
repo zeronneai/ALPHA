@@ -11,6 +11,7 @@ const MENU = [
   { href: "/admin/asistencia", etiqueta: "Asistencia" },
   { href: "/admin/registrados", etiqueta: "Registrados" },
   { href: "/admin/resultados", etiqueta: "Resultados" },
+  { href: "/admin/qr", etiqueta: "QRs" },
 ];
 
 export default function AdminShell({ children }: { children: ReactNode }) {
@@ -36,13 +37,13 @@ export default function AdminShell({ children }: { children: ReactNode }) {
           </div>
         </div>
         <nav aria-label="Menú del panel" className="border-b border-neutral-200 bg-white">
-          <ul className="mx-auto grid max-w-5xl grid-cols-4">
+          <ul className="mx-auto grid max-w-5xl grid-cols-5">
             {MENU.map((m) => (
               <li key={m.href}>
                 <Link
                   href={m.href}
                   aria-current={activo(m.href) ? "page" : undefined}
-                  className={`block border-b-4 px-1 py-3 text-center text-sm font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-alpha sm:text-base ${
+                  className={`block border-b-4 whitespace-nowrap px-0.5 py-3 text-center text-xs font-bold leading-5 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-alpha sm:px-1 sm:text-base sm:leading-6 ${
                     activo(m.href) ? "border-alpha text-alpha" : "border-transparent text-neutral-600 hover:text-alpha"
                   }`}
                 >
