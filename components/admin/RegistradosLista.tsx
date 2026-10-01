@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useAdminData } from "./AdminDataProvider";
 import RegistroFormModal from "./RegistroFormModal";
+import InvitadoMenu from "./InvitadoMenu";
 import InvitarButton, { AVISO_INVITACION } from "./InvitarButton";
 import SearchInput from "./SearchInput";
 import { botonBorde } from "./SinAcceso";
@@ -40,7 +41,7 @@ export default function RegistradosLista() {
   const [busqueda, setBusqueda] = useState("");
   const [editando, setEditando] = useState<RegistroRow | null>(null);
   const [soloPendientes, setSoloPendientes] = useState(false);
-  const [errorInvitar, setErrorInvitar] = useState(false);
+  const [errorInvitar, setErrorInvitar] = useState<string | null>(null);
 
   const porRegistro = useMemo(() => sesionesPorRegistro(asistencias), [asistencias]);
   const visibles = useMemo(() => {
@@ -55,7 +56,7 @@ export default function RegistradosLista() {
 
   const asistencias_de = (r: RegistroRow) => `${porRegistro.get(String(r.id))?.size ?? 0}/${SESIONES.length}`;
   const invitacion = (r: RegistroRow) =>
-    r.invitado_whatsapp ? <span className="text-sm font-semibold text-neutral-500">Invitado ✓</span> : <InvitarButton registro={r} onError={() => setErrorInvitar(true)} />;
+    r.invitado_whatsapp ? <InvitadoMenu registro={r} onError={() => setErrorInvitar("No se pudo marcar como no invitado, intenta de nuevo")} /> : <InvitarButton registro={r} onError={() => setErrorInvitar(AVISO_INVITACION)} />;
   const editar = (r: RegistroRow) => (
     <button type="button" onClick={() => setEditando(r)} className={`${linkAccion} border border-neutral-300 text-neutral-800 hover:border-alpha hover:text-alpha`}>
       Editar
@@ -81,7 +82,7 @@ export default function RegistradosLista() {
 
       {errorInvitar && (
         <p role="alert" className="rounded-xl bg-alpha-soft px-4 py-3 text-sm font-medium text-alpha-dark">
-          {AVISO_INVITACION}
+          {errorInvitar}
         </p>
       )}
 
