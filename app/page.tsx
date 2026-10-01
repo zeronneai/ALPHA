@@ -8,10 +8,10 @@ export default function Home() {
         <Image
           src="/logo.png"
           alt="Alpha Jóvenes"
-          width={160}
-          height={80}
+          width={800}
+          height={722}
           priority
-          className="mx-auto h-20 w-auto object-contain"
+          className="mx-auto h-28 w-auto object-contain"
         />
         <h1 className="mt-4 text-2xl font-extrabold tracking-tight sm:text-3xl">Alpha Jóvenes</h1>
         <p className="mt-1 text-sm text-white/90">Regístrate y sé parte del grupo</p>
