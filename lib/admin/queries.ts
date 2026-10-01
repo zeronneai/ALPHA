@@ -64,3 +64,11 @@ export async function crearAsistencias(registroIds: Id[], sesion: number): Promi
     if (error) throw error;
   }
 }
+
+/** Marca a la persona como invitada al grupo de WhatsApp (registros.invitado_whatsapp = true). */
+export async function guardarInvitado(id: Id): Promise<void> {
+  const { data, error } = await getSupabase().from("registros").update({ invitado_whatsapp: true }).eq("id", id).select("id");
+  if (error) throw error;
+  // Con RLS, un update sin permiso no da error: simplemente no modifica nada.
+  if (!data || data.length === 0) throw new Error("No se actualizó el registro (¿falta permiso?)");
+}

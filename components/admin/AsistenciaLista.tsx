@@ -3,14 +3,16 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useAdminData } from "./AdminDataProvider";
+import InvitarButton, { AVISO_INVITACION } from "./InvitarButton";
 import Modal from "./Modal";
 import RegistroFormModal from "./RegistroFormModal";
 import SearchInput from "./SearchInput";
 import { botonBorde, botonRojo } from "./SinAcceso";
+import { WHATSAPP_GROUP_CONFIGURADO } from "@/lib/config";
 import { normalizar, porNombre } from "@/lib/admin/formato";
 import type { Sesion } from "@/lib/sesiones";
 import type { Registro } from "@/types/registro";
-import type { RegistroRow } from "@/types/admin";
+import type { Id, RegistroRow } from "@/types/admin";
 
 export default function AsistenciaLista({ sesion }: { sesion: Sesion }) {
   const { registros, asistencias, agregarRegistro, marcarAsistencia, marcarVarios } = useAdminData();
@@ -20,6 +22,7 @@ export default function AsistenciaLista({ sesion }: { sesion: Sesion }) {
   const [confirmando, setConfirmando] = useState(false);
   const [marcando, setMarcando] = useState(false);
   const [agregando, setAgregando] = useState(false);
+  const [agregadaId, setAgregadaId] = useState<Id | null>(null);
 
   const presentes = useMemo(
     () => new Set(asistencias.filter((a) => a.sesion === sesion.numero).map((a) => String(a.registro_id))),
@@ -30,6 +33,7 @@ export default function AsistenciaLista({ sesion }: { sesion: Sesion }) {
     const q = normalizar(busqueda.trim());
     return q ? ordenados.filter((r) => normalizar(r.nombre).includes(q)) : ordenados;
   }, [ordenados, busqueda]);
+  const agregada = agregadaId === null ? undefined : registros.find((r) => String(r.id) === String(agregadaId));
   const faltantes = registros.filter((r) => !presentes.has(String(r.id)));
 
   const alternar = async (r: RegistroRow) => {
@@ -67,6 +71,7 @@ export default function AsistenciaLista({ sesion }: { sesion: Sesion }) {
 
   const guardarNueva = async (data: Registro) => {
     const nuevo = await agregarRegistro(data);
+    if (WHATSAPP_GROUP_CONFIGURADO) setAgregadaId(nuevo.id);
     try {
       await marcarAsistencia(nuevo.id, sesion.numero, true);
     } catch {
@@ -114,9 +119,9 @@ export default function AsistenciaLista({ sesion }: { sesion: Sesion }) {
             const clave = String(r.id);
             const activo = presentes.has(clave);
             return (
-              <li key={clave}>
+              <li key={clave} className="flex items-center gap-2">
                 <label
-                  className={`flex cursor-pointer items-center gap-4 rounded-2xl border-2 px-4 py-3.5 transition ${
+                  className={`flex min-w-0 flex-1 cursor-pointer items-center gap-4 rounded-2xl border-2 px-4 py-3.5 transition ${
                     activo ? "border-alpha bg-alpha-soft" : "border-neutral-200 bg-white"
                   } ${pendientes.has(clave) ? "opacity-60" : ""}`}
                 >
@@ -129,6 +134,7 @@ export default function AsistenciaLista({ sesion }: { sesion: Sesion }) {
                   />
                   <span className="min-w-0 flex-1 text-base font-semibold text-neutral-900">{r.nombre}</span>
                 </label>
+                {!r.invitado_whatsapp && <InvitarButton registro={r} variante="icono" onError={() => setError(AVISO_INVITACION)} />}
               </li>
             );
           })}
@@ -146,6 +152,31 @@ export default function AsistenciaLista({ sesion }: { sesion: Sesion }) {
             </button>
             <button type="button" onClick={() => void marcarTodos()} disabled={marcando} className={botonRojo}>
               {marcando ? "Marcando..." : "Sí, marcar"}
+            </button>
+          </div>
+        </Modal>
+      )}
+
+      {agregada && (
+        <Modal titulo="¡Agregado!" onClose={() => setAgregadaId(null)}>
+          <p className="text-neutral-700">
+            <strong>{agregada.nombre}</strong> quedó registrado(a) y marcado(a) en {sesion.titulo}.
+          </p>
+          <div className="mt-6 space-y-3">
+            {agregada.invitado_whatsapp ? (
+              <p className="text-center font-semibold text-neutral-500">Invitado al grupo ✓</p>
+            ) : (
+              <div className="flex flex-col items-stretch">
+                <InvitarButton registro={agregada} variante="grande" etiqueta="Invitar al grupo de WhatsApp" onError={() => setError(AVISO_INVITACION)} />
+              </div>
+            )}
+            {error && (
+              <p role="alert" className="rounded-xl bg-alpha-soft px-4 py-3 text-sm font-medium text-alpha-dark">
+                {error}
+              </p>
+            )}
+            <button type="button" onClick={() => setAgregadaId(null)} className={botonBorde}>
+              Listo
             </button>
           </div>
         </Modal>

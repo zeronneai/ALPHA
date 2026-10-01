@@ -4,22 +4,36 @@ import { useEffect, useRef, type ReactNode } from "react";
 
 type Props = { titulo: string; onClose: () => void; children: ReactNode };
 
+// Contador para que varios modales (uno cierra mientras otro abre) no dejen la página sin scroll.
+let bloqueos = 0;
+let overflowPrevio = "";
+function bloquearScroll() {
+  if (bloqueos++ === 0) {
+    overflowPrevio = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+  }
+}
+function liberarScroll() {
+  if (--bloqueos === 0) document.body.style.overflow = overflowPrevio;
+}
+
 export default function Modal({ titulo, onClose, children }: Props) {
   const ref = useRef<HTMLDivElement>(null);
+  const alCerrar = useRef(onClose);
+  alCerrar.current = onClose;
 
   useEffect(() => {
     const previo = document.activeElement as HTMLElement | null;
-    const overflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    bloquearScroll();
     ref.current?.focus();
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && alCerrar.current();
     document.addEventListener("keydown", onKey);
     return () => {
-      document.body.style.overflow = overflow;
+      liberarScroll();
       document.removeEventListener("keydown", onKey);
       previo?.focus?.();
     };
-  }, [onClose]);
+  }, []);
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 sm:items-center sm:p-4" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>

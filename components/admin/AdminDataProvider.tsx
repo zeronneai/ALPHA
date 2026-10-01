@@ -9,6 +9,7 @@ import {
   crearAsistencias,
   crearRegistro,
   editarRegistro,
+  guardarInvitado,
   leerAsistencias,
   leerEvaluaciones,
   leerRegistros,
@@ -25,6 +26,8 @@ type AdminData = {
   /** Actualización optimista: si falla, se revierte y se lanza el error. */
   marcarAsistencia: (registroId: Id, sesion: number, presente: boolean) => Promise<void>;
   marcarVarios: (registroIds: Id[], sesion: number) => Promise<void>;
+  /** Marca como invitado al grupo de WhatsApp (optimista; si falla se revierte y se lanza el error). */
+  marcarInvitado: (id: Id) => Promise<void>;
 };
 
 const Ctx = createContext<AdminData | null>(null);
@@ -111,6 +114,19 @@ export default function AdminDataProvider({ children }: { children: ReactNode })
     setRegistros((prev) => prev.map((r) => (String(r.id) === String(id) ? fila : r)));
   }, []);
 
+  const marcarInvitado = useCallback(async (id: Id) => {
+    const aplicar = (valor: boolean) =>
+      setRegistros((prev) => prev.map((r) => (String(r.id) === String(id) ? { ...r, invitado_whatsapp: valor } : r)));
+    aplicar(true);
+    try {
+      await guardarInvitado(id);
+    } catch (err) {
+      console.error("Error al marcar como invitado:", err);
+      aplicar(false);
+      throw err;
+    }
+  }, []);
+
   if (estado === "cargando") return <Cargando />;
   if (estado === "sin_acceso")
     return (
@@ -127,7 +143,7 @@ export default function AdminDataProvider({ children }: { children: ReactNode })
     );
 
   return (
-    <Ctx.Provider value={{ registros, asistencias, evaluaciones, agregarRegistro, actualizarRegistro, marcarAsistencia, marcarVarios }}>
+    <Ctx.Provider value={{ registros, asistencias, evaluaciones, agregarRegistro, actualizarRegistro, marcarAsistencia, marcarVarios, marcarInvitado }}>
       {children}
     </Ctx.Provider>
   );
