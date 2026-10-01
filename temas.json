@@ -1,0 +1,197 @@
+[
+  {
+    "episodio": 1,
+    "slug": "vida",
+    "titulo": "Vida",
+    "pregunta_central": "¿Esto es todo?",
+    "resumen": "Alpha arranca con una invitación: atreverse a explorar las preguntas más grandes de la vida y conocer quién es Jesús y qué dijo. Aquí no hay preguntas tontas ni opiniones prohibidas, todo se vale.\n\nTodos andamos buscando llenar un vacío interior con algo que nos haga felices, pero casi nada lo llena del todo. Jesús afirma que Él es justo lo que estamos buscando: el camino, la verdad, la vida y el pan que de verdad sacia.",
+    "puntos_clave": [
+      "Alpha es un espacio para explorar la vida y la fe sin presión.",
+      "Todos buscamos llenar un vacío de felicidad que nada termina de llenar.",
+      "Si el cristianismo es verdad, no puede ser algo de importancia media: o no importa nada o importa todo.",
+      "Jesús se presenta como la respuesta a lo que más necesitamos."
+    ],
+    "versiculos": ["Juan 14:6", "Juan 6:35"],
+    "pdf": "episodio-01-vida.pdf"
+  },
+  {
+    "episodio": 2,
+    "slug": "jesus",
+    "titulo": "Jesús",
+    "pregunta_central": "¿Quién es Él?",
+    "resumen": "Jesús es la persona más conocida de la historia, y hay razones para pensar que fue mucho más que un buen maestro. Otros líderes señalan un camino hacia la verdad o hacia una vida plena; Jesús dijo que Él mismo es la verdad y la vida.\n\nSu vida, su muerte y su resurrección son el centro de la fe cristiana. La tumba vacía no es un sentimiento sino un hecho histórico, y apunta a que Dios existe y se ha dado a conocer a través de Jesús.",
+    "puntos_clave": [
+      "Jesús no solo enseñó un camino, dijo ser el camino.",
+      "Hay evidencia de que fue más que un líder religioso.",
+      "La fe cristiana se basa en un hecho histórico: la resurrección.",
+      "Jesús invita a los cansados a encontrar descanso en Él."
+    ],
+    "versiculos": ["Mateo 11:28", "Juan 10:30"],
+    "pdf": "episodio-02-jesus.pdf"
+  },
+  {
+    "episodio": 3,
+    "slug": "cruz",
+    "titulo": "Cruz",
+    "pregunta_central": "¿Por qué murió Jesús?",
+    "resumen": "El pecado es real y tiene consecuencias reales en nosotros y en el mundo. La muerte y la resurrección de Jesús son la respuesta de Dios a ese problema.\n\nEn la cruz vemos cuánto nos ama Dios: Jesús cargó lo que nos tocaba a nosotros, la muerte fue vencida, el poder del pecado se rompió y quedó abierta la puerta para tener una relación con Dios como Padre.",
+    "puntos_clave": [
+      "Todos hemos fallado y eso nos aleja de Dios.",
+      "Jesús tomó en su lugar el castigo que nos correspondía.",
+      "La cruz muestra el amor de Dios de forma personal: murió por ti.",
+      "Gracias a la cruz todos estamos invitados a una relación con Dios."
+    ],
+    "versiculos": ["Romanos 3:23", "Isaías 53:6", "Gálatas 2:20"],
+    "pdf": "episodio-03-cruz.pdf"
+  },
+  {
+    "episodio": 4,
+    "slug": "fe",
+    "titulo": "Fe",
+    "pregunta_central": "¿Cómo puedo tener fe?",
+    "resumen": "Ser cristiano no es entrar a un club ni acumular conocimiento. Es una relación con Jesús que cambia la vida, y a esa relación se entra por la fe.\n\nTener fe es confiar en alguien lo suficiente como para actuar en esa confianza. No es un salto a ciegas, es un paso basado en quién es Jesús y en lo que ya hizo por nosotros.",
+    "puntos_clave": [
+      "El cristianismo es una relación, no una membresía.",
+      "Fe es confianza que se convierte en acción.",
+      "No es fe ciega: se apoya en lo que Jesús hizo.",
+      "Jesús toca a la puerta y espera que le abramos."
+    ],
+    "versiculos": ["2 Corintios 5:17", "Romanos 5:8", "Apocalipsis 3:20", "Juan 1:12"],
+    "pdf": "episodio-04-fe.pdf"
+  },
+  {
+    "episodio": 5,
+    "slug": "oracion",
+    "titulo": "Oración",
+    "pregunta_central": "¿Por qué y cómo debo orar?",
+    "resumen": "Orar es simplemente platicar con Dios. Como en cualquier relación, la comunicación es lo que la hace crecer, y Jesús es quien hace posible esa cercanía.\n\nPodemos orar por lo que sea, grande o pequeño, porque a Dios le importa todo. La oración cambia situaciones, nos da paz y nos cambia la forma de ver las cosas. Y cuando no entendemos lo que pasa, seguimos confiando en quien va al volante.",
+    "puntos_clave": [
+      "La oración es una conversación con Dios.",
+      "No hay tema demasiado chico ni demasiado grande para Dios.",
+      "Orar trae paz y cambia nuestra perspectiva.",
+      "Tips: mantenlo real, mantenlo simple, nunca pares."
+    ],
+    "versiculos": ["Efesios 2:18", "Filipenses 4:6-7", "Mateo 6:6"],
+    "pdf": "episodio-05-oracion.pdf"
+  },
+  {
+    "episodio": 6,
+    "slug": "biblia",
+    "titulo": "Biblia",
+    "pregunta_central": "¿Por qué y cómo leer la Biblia?",
+    "resumen": "La Biblia es la forma principal en que Dios nos habla. Nos apunta hacia Jesús y nos da dirección práctica para vivir.\n\nLeerla no es solo estudiar un libro antiguo: es una manera de conectar con Dios y construir día a día la relación con Jesús. Funciona como guía y también nos marca límites sanos.",
+    "puntos_clave": [
+      "Dios nos habla principalmente a través de la Biblia.",
+      "La Biblia nos lleva a conocer a Jesús.",
+      "Es guía para lo que creemos y cómo vivimos.",
+      "Tips para leerla: busca un momento y lugar, no abras al azar, haz preguntas y platícalo con otros."
+    ],
+    "versiculos": ["2 Timoteo 3:16-17"],
+    "pdf": "episodio-06-biblia.pdf"
+  },
+  {
+    "episodio": 7,
+    "slug": "espiritu-santo",
+    "titulo": "Espíritu Santo",
+    "pregunta_central": "¿Quién es el Espíritu Santo y qué hace?",
+    "resumen": "El Espíritu Santo es Dios con nosotros. No es una energía o una fuerza misteriosa, es una persona, y estuvo presente desde la creación.\n\nÉl nos da fuerza y libertad, nos capacita para servir, va formando nuestro carácter y llena el corazón con el amor de Dios. Su fruto se nota en una vida con más amor, alegría, paz, paciencia y dominio propio.",
+    "puntos_clave": [
+      "El Espíritu Santo es una persona, no una fuerza.",
+      "Es Dios presente en tu vida.",
+      "Da poder para servir y valentía para hablar de Jesús.",
+      "Produce fruto: amor, alegría, paz, paciencia, bondad y dominio propio."
+    ],
+    "versiculos": ["Hechos 1:4-5", "Hechos 1:8", "Joel 2:28-29", "Lucas 4:18-19", "Ezequiel 36:26", "Gálatas 5:22-23"],
+    "pdf": "episodio-07-espiritu-santo.pdf"
+  },
+  {
+    "episodio": 8,
+    "slug": "llenura",
+    "titulo": "Llenura",
+    "pregunta_central": "¿Cómo puedo ser lleno del Espíritu Santo?",
+    "resumen": "Dios quiere que todos vivamos la experiencia de ser llenos de su Espíritu. Cuando eso pasa, se siente de forma profunda su amor y su poder, nace el valor para compartir la fe y unas ganas nuevas de adorar.\n\nCada persona lo vive de manera distinta. Esta sesión es una preparación para un tiempo de oración donde todos tienen la oportunidad de recibir oración si así lo desean.",
+    "puntos_clave": [
+      "Dios quiere llenarnos de su Espíritu.",
+      "Se vive como amor, poder y valentía.",
+      "La experiencia es única para cada quien.",
+      "Nadie está obligado: la oración es una invitación."
+    ],
+    "versiculos": [],
+    "pdf": "episodio-08-llenura.pdf"
+  },
+  {
+    "episodio": 9,
+    "slug": "nueva-vida",
+    "titulo": "Nueva Vida",
+    "pregunta_central": "¿Cómo puedo aprovechar al máximo el resto de mi vida?",
+    "resumen": "Una relación con Dios lo cambia todo. Sin importar tu pasado, su amor hace posible empezar una vida nueva.\n\nEsa nueva vida no es una lista de reglas sino una respuesta al amor de Dios: dejar de vivir moldeado por lo que todos hacen y descubrir el propósito que Él tiene para ti.",
+    "puntos_clave": [
+      "Con Dios siempre se puede empezar de nuevo.",
+      "No tienes que encajar en el molde de los demás.",
+      "Dios tiene un propósito para tu vida.",
+      "La nueva vida es una respuesta a su amor."
+    ],
+    "versiculos": ["Romanos 12:1-2", "Mateo 6:33", "2 Corintios 5:17"],
+    "pdf": "episodio-09-nueva-vida.pdf"
+  },
+  {
+    "episodio": 10,
+    "slug": "el-mal",
+    "titulo": "El Mal",
+    "pregunta_central": "¿Cómo puedo resistirlo?",
+    "resumen": "El mal se presenta de tres formas: lo malo que hay en el mundo, lo malo que hay dentro de nosotros y las fuerzas espirituales que se oponen a Dios. Sus tácticas principales son la tentación, la acusación y la mentira.\n\nCon Dios podemos mantenernos firmes y, todavía más, vencer el mal haciendo el bien. Tu vida puede hacer una diferencia real.",
+    "puntos_clave": [
+      "Tres frentes: el mundo, la carne y el maligno.",
+      "Tácticas del enemigo: tentación, acusación y mentira.",
+      "Dios nos da su armadura para resistir.",
+      "El mal se vence con el bien."
+    ],
+    "versiculos": ["Colosenses 1:13", "Romanos 12:21", "Romanos 8:1", "Efesios 6:10-13", "Juan 10:10", "Santiago 4:7-8"],
+    "pdf": "episodio-10-el-mal.pdf"
+  },
+  {
+    "episodio": 11,
+    "slug": "contarselo-a-otros",
+    "titulo": "Contárselo a otros",
+    "pregunta_central": "¿Por qué y cómo debo hacerlo?",
+    "resumen": "La noticia sobre Jesús es la mejor que alguien puede escuchar: por lo que Él hizo podemos tener una relación con Dios.\n\nCompartir la fe no es presionar a nadie. Se hace con amabilidad y respeto, contando lo que has vivido, orando por otros y con actos de amor que hablan más que las palabras.",
+    "puntos_clave": [
+      "El mensaje de Jesús es una buena noticia.",
+      "Se comparte con amabilidad y respeto.",
+      "Tu historia personal tiene poder.",
+      "Las acciones de amor también comunican el evangelio."
+    ],
+    "versiculos": ["Mateo 5:13-16", "1 Pedro 3:15", "Juan 9:25", "1 Tesalonicenses 1:5"],
+    "pdf": "episodio-11-contarselo-a-otros.pdf"
+  },
+  {
+    "episodio": 12,
+    "slug": "sanidad",
+    "titulo": "Sanidad",
+    "pregunta_central": "¿Sana Dios hoy?",
+    "resumen": "Los evangelios están llenos de historias de Jesús sanando personas, y a lo largo de la historia Dios ha seguido usando a sus seguidores para lo mismo.\n\nNo siempre entendemos por qué unas personas sanan y otras no, pero seguimos orando porque Dios es un Padre bueno. Que no llegue la sanación no significa falta de fe ni falta de amor de Dios.",
+    "puntos_clave": [
+      "Jesús sanó y Dios sigue sanando hoy.",
+      "Dios nos invita a orar por otros.",
+      "Hay sanación física, emocional y espiritual.",
+      "Si no llega la sanación, no es castigo ni falta de amor."
+    ],
+    "versiculos": ["Éxodo 15:26", "Mateo 9:35"],
+    "pdf": "episodio-12-sanidad.pdf"
+  },
+  {
+    "episodio": 13,
+    "slug": "iglesia",
+    "titulo": "Iglesia",
+    "pregunta_central": "¿Qué hay de la Iglesia?",
+    "resumen": "La Iglesia es la familia de Dios: es la gente, no un edificio. Es un movimiento de esperanza, amor y justicia, y todos estamos invitados a vivir la fe acompañados.\n\nCuando la Iglesia se parece a Jesús, se vuelve un lugar de hogar y sanación para el mundo. Alpha es apenas el inicio: seguir a Jesús es la gran aventura de la vida.",
+    "puntos_clave": [
+      "La Iglesia es una familia, no un lugar.",
+      "La fe se vive mejor en comunidad.",
+      "Lo que nos une es más grande que lo que nos divide.",
+      "Alpha es solo el comienzo del viaje."
+    ],
+    "versiculos": ["Hebreos 10:25", "Mateo 18:20", "Efesios 2:22", "Juan 17:21"],
+    "pdf": "episodio-13-iglesia.pdf"
+  }
+]
