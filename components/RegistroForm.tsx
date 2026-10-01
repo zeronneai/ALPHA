@@ -49,8 +49,9 @@ export default function RegistroForm() {
     try {
       await submitRegistro(data);
       setDone(true);
-    } catch {
-      setSubmitError("No pudimos completar tu registro. Inténtalo de nuevo.");
+    } catch (error) {
+      console.error("Error al registrar:", error);
+      setSubmitError("Hubo un problema, intenta de nuevo");
     }
   };
 
