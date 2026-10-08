@@ -9,6 +9,7 @@ import SelectField from "./SelectField";
 import SuccessScreen from "./SuccessScreen";
 import { OPCIONES_ORIGEN, registroSchema, type RegistroFormValues } from "@/lib/schema";
 import { calcularFechaNacimiento } from "@/lib/calcularFechaNacimiento";
+import { esDuplicado } from "@/lib/errores";
 import { submitRegistro } from "@/lib/submitRegistro";
 import type { Registro } from "@/types/registro";
 
@@ -32,6 +33,7 @@ export default function RegistroForm() {
     watch,
     trigger,
     reset,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<RegistroFormValues>({
     resolver: zodResolver(registroSchema),
@@ -55,6 +57,15 @@ export default function RegistroForm() {
       setDone(true);
     } catch (error) {
       console.error("Error al registrar:", error);
+      if (esDuplicado(error)) {
+        // Teléfono repetido: se avisa en el campo y se conserva todo lo demás que escribió.
+        setError(
+          "telefono",
+          { type: "server", message: "Este teléfono ya está registrado en Alpha. Si crees que es un error, avísale a tu líder." },
+          { shouldFocus: true },
+        );
+        return;
+      }
       setSubmitError("Hubo un problema, intenta de nuevo");
     }
   };

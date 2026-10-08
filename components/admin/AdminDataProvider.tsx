@@ -5,6 +5,7 @@ import Cargando from "./Cargando";
 import SinAcceso from "./SinAcceso";
 import {
   borrarAsistencia,
+  borrarRegistro,
   crearAsistencia,
   crearAsistencias,
   crearRegistro,
@@ -26,6 +27,8 @@ type AdminData = {
   /** Actualización optimista: si falla, se revierte y se lanza el error. */
   marcarAsistencia: (registroId: Id, sesion: number, presente: boolean) => Promise<void>;
   marcarVarios: (registroIds: Id[], sesion: number) => Promise<void>;
+  /** Elimina el registro y sus asistencias (en la base y en pantalla). */
+  eliminarRegistro: (id: Id) => Promise<void>;
   /** Marca (o desmarca) como invitado al grupo de WhatsApp (optimista; si falla se revierte y se lanza el error). */
   marcarInvitado: (id: Id, invitado?: boolean) => Promise<void>;
 };
@@ -114,6 +117,12 @@ export default function AdminDataProvider({ children }: { children: ReactNode })
     setRegistros((prev) => prev.map((r) => (String(r.id) === String(id) ? fila : r)));
   }, []);
 
+  const eliminarRegistro = useCallback(async (id: Id) => {
+    await borrarRegistro(id);
+    setRegistros((prev) => prev.filter((r) => String(r.id) !== String(id)));
+    setAsistencias((prev) => prev.filter((a) => String(a.registro_id) !== String(id)));
+  }, []);
+
   const marcarInvitado = useCallback(async (id: Id, invitado = true) => {
     const aplicar = (valor: boolean) =>
       setRegistros((prev) => prev.map((r) => (String(r.id) === String(id) ? { ...r, invitado_whatsapp: valor } : r)));
@@ -143,7 +152,7 @@ export default function AdminDataProvider({ children }: { children: ReactNode })
     );
 
   return (
-    <Ctx.Provider value={{ registros, asistencias, evaluaciones, agregarRegistro, actualizarRegistro, marcarAsistencia, marcarVarios, marcarInvitado }}>
+    <Ctx.Provider value={{ registros, asistencias, evaluaciones, agregarRegistro, actualizarRegistro, marcarAsistencia, marcarVarios, marcarInvitado, eliminarRegistro }}>
       {children}
     </Ctx.Provider>
   );

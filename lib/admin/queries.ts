@@ -1,4 +1,5 @@
 import { getSupabase } from "@/lib/supabase";
+import { CODIGO_LLAVE_FORANEA, tieneCodigo } from "@/lib/errores";
 import type { Registro } from "@/types/registro";
 import type { AsistenciaRow, EpisodioEstadoRow, EvaluacionRow, Id, PreguntaRow, RegistroRow } from "@/types/admin";
 
@@ -102,4 +103,24 @@ export async function borrarPregunta(id: Id): Promise<void> {
   const { data, error } = await getSupabase().from("preguntas_participantes").delete().eq("id", id).select("id");
   if (error) throw error;
   if (!data || data.length === 0) throw new Error("No se eliminó la pregunta (¿falta permiso?)");
+}
+
+async function borrarFilaRegistro(id: Id) {
+  return getSupabase().from("registros").delete().eq("id", id).select("id");
+}
+
+/**
+ * Elimina un registro y sus asistencias. Si la llave foránea de asistencias tiene ON DELETE CASCADE
+ * basta con borrar el registro; si no (error 23503), se borran primero sus asistencias y se reintenta.
+ */
+export async function borrarRegistro(id: Id): Promise<void> {
+  let { data, error } = await borrarFilaRegistro(id);
+  if (error && tieneCodigo(error, CODIGO_LLAVE_FORANEA)) {
+    const { error: errAsistencias } = await getSupabase().from("asistencias").delete().eq("registro_id", id);
+    if (errAsistencias) throw errAsistencias;
+    ({ data, error } = await borrarFilaRegistro(id));
+  }
+  if (error) throw error;
+  // Con RLS, un delete sin permiso no da error: simplemente no borra nada.
+  if (!data || data.length === 0) throw new Error("No se eliminó el registro (¿falta permiso para borrar en registros?)");
 }

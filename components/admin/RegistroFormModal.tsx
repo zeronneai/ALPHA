@@ -4,12 +4,13 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Modal from "./Modal";
-import { botonRojo } from "./SinAcceso";
+import { botonBorde, botonRojo } from "./SinAcceso";
 import FormField from "@/components/FormField";
 import SelectField from "@/components/SelectField";
 import CumpleanosField from "@/components/CumpleanosField";
 import { OPCIONES_ORIGEN, registroSchema, type RegistroFormValues } from "@/lib/schema";
 import { armarRegistro, valoresIniciales } from "@/lib/admin/registro";
+import { esDuplicado } from "@/lib/errores";
 import type { Registro } from "@/types/registro";
 import type { RegistroRow } from "@/types/admin";
 
@@ -20,11 +21,14 @@ type Props = {
   registro?: RegistroRow;
   onGuardar: (data: Registro) => Promise<void>;
   onClose: () => void;
+  /** Si el teléfono ya existe (23505), ofrece cerrar el modal y buscar a esa persona con su teléfono. */
+  onBuscar?: (telefono: string) => void;
 };
 
 /** Mismos campos que el registro público; sirve para agregar y para editar. */
-export default function RegistroFormModal({ titulo, textoBoton, registro, onGuardar, onClose }: Props) {
+export default function RegistroFormModal({ titulo, textoBoton, registro, onGuardar, onClose, onBuscar }: Props) {
   const [error, setError] = useState<string | null>(null);
+  const [duplicado, setDuplicado] = useState<string | null>(null); // teléfono repetido (solo dígitos)
   const {
     register,
     handleSubmit,
@@ -37,12 +41,15 @@ export default function RegistroFormModal({ titulo, textoBoton, registro, onGuar
 
   const onSubmit = async (v: RegistroFormValues) => {
     setError(null);
+    setDuplicado(null);
+    const data = armarRegistro(v, registro);
     try {
-      await onGuardar(armarRegistro(v, registro));
+      await onGuardar(data);
       onClose();
     } catch (err) {
       console.error("Error al guardar el registro:", err);
-      setError("Hubo un problema, intenta de nuevo");
+      if (esDuplicado(err)) setDuplicado(data.telefono);
+      else setError("Hubo un problema, intenta de nuevo");
     }
   };
 
@@ -66,6 +73,16 @@ export default function RegistroFormModal({ titulo, textoBoton, registro, onGuar
           <p role="alert" className="rounded-xl bg-alpha-soft px-4 py-3 text-sm font-medium text-alpha-dark">
             {error}
           </p>
+        )}
+        {duplicado && (
+          <div role="alert" className="space-y-3 rounded-xl bg-alpha-soft px-4 py-3">
+            <p className="text-sm font-semibold text-alpha-dark">Esta persona ya está registrada</p>
+            {onBuscar && (
+              <button type="button" onClick={() => onBuscar(duplicado)} className={`${botonBorde} !py-2.5 !text-sm`}>
+                Buscarla en la lista
+              </button>
+            )}
+          </div>
         )}
         <button type="submit" disabled={isSubmitting} className={botonRojo}>
           {isSubmitting ? "Guardando..." : textoBoton}

@@ -2,11 +2,12 @@
 
 import { useMemo, useState } from "react";
 import { useAdminData } from "./AdminDataProvider";
+import Modal from "./Modal";
 import RegistroFormModal from "./RegistroFormModal";
 import InvitadoMenu from "./InvitadoMenu";
 import InvitarButton, { AVISO_INVITACION } from "./InvitarButton";
 import SearchInput from "./SearchInput";
-import { botonBorde } from "./SinAcceso";
+import { botonBorde, botonRojo } from "./SinAcceso";
 import { WHATSAPP_GROUP_CONFIGURADO } from "@/lib/config";
 import { SESIONES } from "@/lib/sesiones";
 import { descargarCsv, generarCsv } from "@/lib/admin/csv";
@@ -37,11 +38,14 @@ function Telefono({ telefono }: { telefono: string }) {
 }
 
 export default function RegistradosLista() {
-  const { registros, asistencias, actualizarRegistro } = useAdminData();
+  const { registros, asistencias, actualizarRegistro, eliminarRegistro } = useAdminData();
   const [busqueda, setBusqueda] = useState("");
   const [editando, setEditando] = useState<RegistroRow | null>(null);
   const [soloPendientes, setSoloPendientes] = useState(false);
   const [errorInvitar, setErrorInvitar] = useState<string | null>(null);
+  const [aEliminar, setAEliminar] = useState<RegistroRow | null>(null);
+  const [eliminando, setEliminando] = useState(false);
+  const [errorEliminar, setErrorEliminar] = useState<string | null>(null);
 
   const porRegistro = useMemo(() => sesionesPorRegistro(asistencias), [asistencias]);
   const visibles = useMemo(() => {
@@ -57,6 +61,35 @@ export default function RegistradosLista() {
   const asistencias_de = (r: RegistroRow) => `${porRegistro.get(String(r.id))?.size ?? 0}/${SESIONES.length}`;
   const invitacion = (r: RegistroRow) =>
     r.invitado_whatsapp ? <InvitadoMenu registro={r} onError={() => setErrorInvitar("No se pudo marcar como no invitado, intenta de nuevo")} /> : <InvitarButton registro={r} onError={() => setErrorInvitar(AVISO_INVITACION)} />;
+  const eliminar = async () => {
+    if (!aEliminar) return;
+    setEliminando(true);
+    setErrorEliminar(null);
+    try {
+      await eliminarRegistro(aEliminar.id);
+      setAEliminar(null);
+    } catch (err) {
+      console.error("Error al eliminar el registro:", err);
+      setErrorEliminar(`No se pudo eliminar a ${aEliminar.nombre}, intenta de nuevo`);
+      setAEliminar(null);
+    } finally {
+      setEliminando(false);
+    }
+  };
+  const botonEliminar = (r: RegistroRow) => (
+    <button
+      type="button"
+      onClick={() => setAEliminar(r)}
+      aria-label={`Eliminar a ${r.nombre}`}
+      title="Eliminar"
+      className={`${linkAccion} gap-1.5 border border-alpha text-alpha hover:bg-alpha-soft`}
+    >
+      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M3 6h18M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2m2 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m4 5v6m6-6v6" />
+      </svg>
+      Eliminar
+    </button>
+  );
   const editar = (r: RegistroRow) => (
     <button type="button" onClick={() => setEditando(r)} className={`${linkAccion} border border-neutral-300 text-neutral-800 hover:border-alpha hover:text-alpha`}>
       Editar
@@ -79,6 +112,12 @@ export default function RegistradosLista() {
       </div>
 
       <SearchInput valor={busqueda} onChange={setBusqueda} placeholder="Buscar por nombre o teléfono" etiqueta="Buscar por nombre o teléfono" />
+
+      {errorEliminar && (
+        <p role="alert" className="rounded-xl bg-alpha-soft px-4 py-3 text-sm font-medium text-alpha-dark">
+          {errorEliminar}
+        </p>
+      )}
 
       {errorInvitar && (
         <p role="alert" className="rounded-xl bg-alpha-soft px-4 py-3 text-sm font-medium text-alpha-dark">
@@ -131,7 +170,10 @@ export default function RegistradosLista() {
                 </dl>
                 <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
                   <Telefono telefono={r.telefono} />
-                  {editar(r)}
+                  <span className="flex gap-2">
+                    {editar(r)}
+                    {botonEliminar(r)}
+                  </span>
                 </div>
                 {WHATSAPP_GROUP_CONFIGURADO && (
                   <div className="mt-3 flex items-center gap-2 border-t border-neutral-100 pt-3 text-sm">
@@ -170,7 +212,7 @@ export default function RegistradosLista() {
                     <td className="whitespace-nowrap px-3 py-3">{fechaCorta(r.created_at)}</td>
                     <td className="px-3 py-3 font-bold text-alpha">{asistencias_de(r)}</td>
                     {WHATSAPP_GROUP_CONFIGURADO && <td className="whitespace-nowrap px-3 py-3">{invitacion(r)}</td>}
-                    <td className="px-3 py-3">{editar(r)}</td>
+                    <td className="px-3 py-3"><span className="flex gap-2">{editar(r)}{botonEliminar(r)}</span></td>
                   </tr>
                 ))}
               </tbody>
@@ -186,7 +228,27 @@ export default function RegistradosLista() {
           registro={editando}
           onGuardar={(data) => actualizarRegistro(editando.id, data)}
           onClose={() => setEditando(null)}
+          onBuscar={(telefono) => {
+            setBusqueda(telefono);
+            setEditando(null);
+          }}
         />
+      )}
+
+      {aEliminar && (
+        <Modal titulo="Eliminar registro" onClose={() => !eliminando && setAEliminar(null)}>
+          <p className="text-neutral-800">
+            ¿Eliminar a <strong>{aEliminar.nombre}</strong>? También se borrarán sus asistencias. Esta acción no se puede deshacer.
+          </p>
+          <div className="mt-6 grid grid-cols-2 gap-3">
+            <button type="button" onClick={() => setAEliminar(null)} disabled={eliminando} className={botonBorde}>
+              Cancelar
+            </button>
+            <button type="button" onClick={() => void eliminar()} disabled={eliminando} className={botonRojo}>
+              {eliminando ? "Eliminando..." : "Sí, eliminar"}
+            </button>
+          </div>
+        </Modal>
       )}
     </div>
   );

@@ -9,7 +9,7 @@ import RegistroFormModal from "./RegistroFormModal";
 import SearchInput from "./SearchInput";
 import { botonBorde, botonRojo } from "./SinAcceso";
 import { WHATSAPP_GROUP_CONFIGURADO } from "@/lib/config";
-import { normalizar, porNombre } from "@/lib/admin/formato";
+import { normalizar, porNombre, soloDigitos } from "@/lib/admin/formato";
 import type { Sesion } from "@/lib/sesiones";
 import type { Registro } from "@/types/registro";
 import type { Id, RegistroRow } from "@/types/admin";
@@ -31,7 +31,9 @@ export default function AsistenciaLista({ sesion }: { sesion: Sesion }) {
   const ordenados = useMemo(() => [...registros].sort(porNombre), [registros]);
   const visibles = useMemo(() => {
     const q = normalizar(busqueda.trim());
-    return q ? ordenados.filter((r) => normalizar(r.nombre).includes(q)) : ordenados;
+    const digitos = soloDigitos(busqueda);
+    if (!q) return ordenados;
+    return ordenados.filter((r) => normalizar(r.nombre).includes(q) || (digitos.length > 0 && soloDigitos(r.telefono).includes(digitos)));
   }, [ordenados, busqueda]);
   const agregada = agregadaId === null ? undefined : registros.find((r) => String(r.id) === String(agregadaId));
   const faltantes = registros.filter((r) => !presentes.has(String(r.id)));
@@ -102,7 +104,7 @@ export default function AsistenciaLista({ sesion }: { sesion: Sesion }) {
         <p className="text-lg font-extrabold text-alpha" aria-live="polite">
           {presentes.size} de {registros.length} asistieron
         </p>
-        <SearchInput valor={busqueda} onChange={setBusqueda} placeholder="Buscar por nombre" etiqueta="Buscar por nombre" />
+        <SearchInput valor={busqueda} onChange={setBusqueda} placeholder="Buscar por nombre o teléfono" etiqueta="Buscar por nombre o teléfono" />
       </div>
 
       {error && (
@@ -183,7 +185,16 @@ export default function AsistenciaLista({ sesion }: { sesion: Sesion }) {
       )}
 
       {agregando && (
-        <RegistroFormModal titulo="Agregar persona nueva" textoBoton="Guardar y marcar asistencia" onGuardar={guardarNueva} onClose={() => setAgregando(false)} />
+        <RegistroFormModal
+          titulo="Agregar persona nueva"
+          textoBoton="Guardar y marcar asistencia"
+          onGuardar={guardarNueva}
+          onClose={() => setAgregando(false)}
+          onBuscar={(telefono) => {
+            setBusqueda(telefono);
+            setAgregando(false);
+          }}
+        />
       )}
     </div>
   );
