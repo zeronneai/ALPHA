@@ -30,7 +30,11 @@ type Respuestas = Record<Campo, Valoracion | null>;
 
 const respuestasVacias: Respuestas = { bienvenida: null, comida: null, tema: null, grupo_mesa: null, ambiente: null };
 
-const storageKey = (sesion: number) => `alpha_eval_sesion_${sesion}`;
+// La sesión 5 se compartió por error durante la sesión 4 (21 oct 2026) y esas
+// respuestas se movieron a la 4. Usamos una clave nueva para que esos celulares
+// puedan contestar la sesión 5 real.
+const storageKey = (sesion: number) =>
+  sesion === 5 ? "alpha_eval_sesion_5_v2" : `alpha_eval_sesion_${sesion}`;
 
 function yaContestada(sesion: number): boolean {
   try {
