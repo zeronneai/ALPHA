@@ -58,3 +58,47 @@ export function sesionesPorRegistro(asistencias: AsistenciaRow[]): Map<string, S
   }
   return mapa;
 }
+
+/**
+ * Calificación de 0 a 100 que combina las tres respuestas:
+ * Mal = 0, Bien = 50, Súper = 100. Null si no hay respuestas.
+ */
+export function calificacion(c: Conteo): number | null {
+  const total = c.mal + c.bien + c.super;
+  return total === 0 ? null : Math.round((c.bien * 50 + c.super * 100) / total);
+}
+
+/** Suma de todas las respuestas de valoración (las 5 preguntas) de un grupo de evaluaciones. */
+export function conteoGeneral(evals: EvaluacionRow[]): Conteo {
+  const c: Conteo = { mal: 0, bien: 0, super: 0 };
+  for (const p of PREGUNTAS_EVALUACION) {
+    const x = conteoPregunta(evals, p.campo);
+    c.mal += x.mal;
+    c.bien += x.bien;
+    c.super += x.super;
+  }
+  return c;
+}
+
+/** Día (hora de Chihuahua) en que más se contestó la encuesta; sirve para identificar la sesión. */
+export function fechaSesion(evals: EvaluacionRow[]): string | null {
+  if (evals.length === 0) return null;
+  const conteo = new Map<string, number>();
+  for (const e of evals) {
+    const dia = new Date(e.created_at).toLocaleDateString("en-CA", { timeZone: "America/Chihuahua" });
+    conteo.set(dia, (conteo.get(dia) ?? 0) + 1);
+  }
+  const [dia] = [...conteo.entries()].sort((a, b) => b[1] - a[1])[0];
+  const [anio, mes, d] = dia.split("-").map(Number);
+  return new Date(anio, mes - 1, d).toLocaleDateString("es-MX", { weekday: "short", day: "numeric", month: "short" });
+}
+
+export type Nivel = { etiqueta: string; fondo: string; texto: string };
+
+/** Semáforo de la calificación para colorear tarjetas y la tabla. */
+export function nivel(cal: number | null): Nivel {
+  if (cal === null) return { etiqueta: "Sin datos", fondo: "#F5F5F5", texto: "#737373" };
+  if (cal >= 80) return { etiqueta: "Excelente", fondo: "#D7141A", texto: "#FFFFFF" };
+  if (cal >= 65) return { etiqueta: "Bien", fondo: "#F4A6A9", texto: "#5C0A0D" };
+  return { etiqueta: "A mejorar", fondo: "#404040", texto: "#FFFFFF" };
+}
